@@ -5,12 +5,19 @@
  */
 package torpedo;
 
+import static com.sun.org.apache.xalan.internal.lib.ExsltDynamic.map;
 import game_panel.GamePanel;
 import java.awt.*;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import static jdk.nashorn.internal.objects.NativeArray.map;
+import static jdk.nashorn.internal.objects.NativeDebug.map;
 
 /**
  *
@@ -26,9 +33,11 @@ public class Home extends JPanel {
     private JMenu mSettings;
     private JMenu mLogout;
     private MainFrame frame;
+    private String userName;
 
-    public Home(MainFrame frame) throws IOException, InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
+    public Home(MainFrame frame, String userName) throws IOException, InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException, SQLException {
         this.frame = frame;
+        this.userName = userName;
         this.setLayout(new BorderLayout());
         tabbedPane = new JTabbedPane();
         userPn = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -37,7 +46,7 @@ public class Home extends JPanel {
         mb = new JMenuBar();
         mSettings = new JMenu("Beállítások");
         mLogout = new JMenu("Kijelentkezés");
-
+        Db.openCon();
         initMenu();
         initSplitPane();
 
@@ -45,7 +54,7 @@ public class Home extends JPanel {
 
     }
 
-    private void initSplitPane() throws IOException, InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException{
+    private void initSplitPane() throws IOException, InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException, SQLException {
 
         initTab("sda");
         initTab("sdsere");
@@ -60,8 +69,11 @@ public class Home extends JPanel {
         JPanel chatPn = new JPanel();
 
         //profilePn.add(new JLabel("profile"));
-        profilePn.add(frame.getGamePanel());
+        //profilePn.add(frame.getGamePanel());
+        Map<String, String> profile = Db.getProfile("a");
+        profilePn.add(new JLabel(profile.get("date")));
 
+        //System.out.println((String) profile.get("date"));
         chatPn.setLayout(new BorderLayout());
         chatPn.add(tabbedPane, BorderLayout.CENTER);
         chatPn.setBackground(Color.white);
@@ -107,20 +119,25 @@ public class Home extends JPanel {
 
     }
 
-    private void initTree() {
+    private void initTree() throws SQLException {
 
         DefaultMutableTreeNode friends = new DefaultMutableTreeNode("Barátok");
         DefaultMutableTreeNode online = new DefaultMutableTreeNode("Online");
         DefaultMutableTreeNode offline = new DefaultMutableTreeNode("Offline");
 
-        DefaultMutableTreeNode u1 = new DefaultMutableTreeNode("User1");
-        DefaultMutableTreeNode u2 = new DefaultMutableTreeNode("User2");
-        DefaultMutableTreeNode u3 = new DefaultMutableTreeNode("User3");
+        ArrayList offlineT = Db.getFriends(userName, 0);
+        ArrayList onlineT = Db.getFriends(userName, 1);
+        
+        for (int i = 0; i < onlineT.size(); i++) {
+            online.add(new DefaultMutableTreeNode(onlineT.get(i)));
+        }
+        
+         for (int i = 0; i < offlineT.size(); i++) {
+            offline.add(new DefaultMutableTreeNode(offlineT.get(i)));
+        }
 
-        online.add(u1);
-        online.add(u2);
 
-        offline.add(u3);
+     
 
         friends.add(online);
         friends.add(offline);
@@ -139,15 +156,15 @@ public class Home extends JPanel {
         mb.setLayout(new BoxLayout(mb, BoxLayout.LINE_AXIS));
         mb.add(mSettings);
         mb.add(mLogout);
-        
+
         mSettings.add(miProfile);
-        
+
         frame.setJMenuBar(mb);
 
     }
-    
-    public void setUser(String userName){
-        User user=new User(userName);
+
+    public void setUser(String userName) {
+        User user = new User(userName);
     }
 
     /*private void initToolBar() {

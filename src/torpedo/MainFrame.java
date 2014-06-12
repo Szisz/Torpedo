@@ -28,7 +28,7 @@ public class MainFrame extends JFrame {
     private JPanel cards;
     private CardLayout cl;
 
-    private Home home;
+    //private Home home;
     private LoginForm loginForm;
     private RegForm regForm;
     private GamePanel gamePanel;
@@ -41,7 +41,7 @@ public class MainFrame extends JFrame {
         gamePanel = new GamePanel();
         loginForm = new LoginForm(this);
         regForm = new RegForm(this);
-        home = new Home(this);
+        //home = new Home(this);
 
         initCards();
         showCard("loginform");
@@ -69,9 +69,9 @@ public class MainFrame extends JFrame {
         return loginForm;
     }
     
-    public Home getHome() {
-        return home;
-    }
+    /*public Home getHome() {
+        //return home;
+    }*/
     
       public RegForm getRegForm() {
         return regForm;
@@ -79,9 +79,14 @@ public class MainFrame extends JFrame {
 
     private void initCards() {
         cards.add(loginForm, "loginForm");
-        cards.add(home, "home");
+       // cards.add(home, "home");
         cards.add(regForm, "regForm");
 
+        add(cards);
+    }
+    
+    public void addCard(JPanel card, String name){
+        cards.add(card, name);
         add(cards);
     }
 

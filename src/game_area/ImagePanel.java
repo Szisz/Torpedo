@@ -16,7 +16,6 @@ import javax.swing.JPanel;
  *
  * @author szilard
  * 
- * Csak egyenlő oldalú képek, egyező méretű képek listája adható át!!!
  * 
  */
 public class ImagePanel extends JPanel {
@@ -33,12 +32,10 @@ public class ImagePanel extends JPanel {
         this.images=_images;
         this.aktiv_img = images.get(0);
         this.aktiv_img_num = 0;
-        this.Size=this.aktiv_img.getWidth()+100;
-        this.setBounds(0, 0, this.Size, this.Size);
-        this.setSize(this.Size, this.Size);
-        //this.setMinimumSize(new Dimension(this.Size, this.Size));
-        //this.setLayout(null);
-        this.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        this.Size=this.aktiv_img.getWidth();
+        this.setPreferredSize(new Dimension(this.Size, this.Size));
+        this.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+        this.setBackground(Color.red);
         this.setVisible(true);
     }
     

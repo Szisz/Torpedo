@@ -32,14 +32,13 @@ public class GameArea<T extends MouseListener> extends JPanel{
     public GameArea(int part_x, int part_y, ArrayList<BufferedImage> images, Class<T> _listenerType, Ships _ships) throws InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException{
         //this.setLayout(null);
         this.setLayout(new GridLayout(part_x, part_y));
+        //this.setSize(500, 500);
         this.setVisible(true);
         //this.setBackground(Color.ORANGE);
         this.listenerType=_listenerType;
         this.ships=_ships;
         this.settingShip=0;
         Constructor<T> c=listenerType.getConstructor(AreaComponent.class, GameArea.class);
-        
-        
         
         parts=new AreaComponent[part_x][part_y];
         for(int i=0; i<parts.length; i++){

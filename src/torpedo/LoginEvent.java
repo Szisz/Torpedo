@@ -9,6 +9,8 @@ package torpedo;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +22,7 @@ import java.util.logging.Logger;
 class LoginEvent implements MouseListener{
 
     MainFrame frame;
+    private Home home;
     public LoginEvent(MainFrame frame) {
         this.frame=frame;
     }
@@ -32,14 +35,27 @@ class LoginEvent implements MouseListener{
 
         try {
             if(Db.loginValidate(userName, pwd)){
-                
+                home = new Home(frame, userName);
+                frame.addCard(home, "home");
                 frame.showCard("home");
-                frame.getHome().setUser(userName);
+                home.setUser(userName);
             }
             else{
                 frame.getLoginForm().setErrorMsgLbl("Hibás felhasználónév vagy jelszó!");
             }
         } catch (SQLException ex) {
+            Logger.getLogger(LoginEvent.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(LoginEvent.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(LoginEvent.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(LoginEvent.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(LoginEvent.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(LoginEvent.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
             Logger.getLogger(LoginEvent.class.getName()).log(Level.SEVERE, null, ex);
         }
             

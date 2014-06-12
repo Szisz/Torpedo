@@ -4,17 +4,19 @@
  */
 package torpedo;
 
+import java.net.URL;
 import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author latyak
  */
-
 public class Db {
 
     private static Connection connect;
@@ -33,22 +35,23 @@ public class Db {
             System.out.println(e);
         }
     }
-    
-    public static ArrayList getProfile(String userName){
-        ArrayList result=new ArrayList();
+
+    public static Map<String, String> getProfile(String userName) {
+        Map<String, String> map = new HashMap<String, String>();
         try {
-            rs = st.executeQuery("SELECT * FROM users where username='"+userName+"'");
+            rs = st.executeQuery("SELECT * FROM users where username='" + userName + "'");
             while (rs.next()) {
-                String country = rs.getString("country");
-                String pwd = rs.getString("pwd");
-                result.add(country);
-                result.add(pwd);
+                map.put("nickname", rs.getString("nickname"));
+                map.put("country", rs.getString("country"));
+                map.put("win", rs.getString("win"));
+                map.put("lose", rs.getString("lose"));
+                map.put("date", rs.getString("date"));
             }
         } catch (Exception e) {
-            System.out.println("Hiba a lekérdezés során:" +e);
+            System.out.println("Hiba a lekérdezés során:" + e);
         }
-        
-        return result;
+
+        return map;
     }
 
     public static void registration(String userName, String nickName, String pwd, String country) throws SQLException {
@@ -75,11 +78,10 @@ public class Db {
             return false;
         }
     }
-    
-    
-    public static boolean existsUser(String user) throws SQLException{
-        rs = st.executeQuery("SELECT username FROM users where username='"+user+"'");
-        
+
+    public static boolean existsUser(String user) throws SQLException {
+        rs = st.executeQuery("SELECT username FROM users where username='" + user + "'");
+
         String rows = "";
         while (rs.next()) {
             rows = rs.getString("username");
@@ -90,6 +92,36 @@ public class Db {
         } else {
             return true;
         }
+    }
+
+    public static ArrayList getFriends(String userName, int status) throws SQLException {
+        ArrayList result = new ArrayList();
+        ArrayList friends = getAllFriends(userName);
+
+        for (int i = 0; i < friends.size(); i++) {
+            rs = st.executeQuery("SELECT * FROM users where username='" + friends.get(i) + "' and status="+status);
+            String row = "";
+            while (rs.next()) {
+                row = rs.getString("username");
+                result.add(row);
+            }
+        }
+        return result;
+    }
+
+    private static ArrayList getAllFriends(String userName) throws SQLException {
+        ArrayList result = new ArrayList();
+        rs = st.executeQuery("SELECT * FROM relationship where user1='" + userName + "' OR user2='" + userName + "'");
+        String row = "";
+        while (rs.next()) {
+            row = rs.getString("user1");
+            if (row.equals(userName)) {
+                row = rs.getString("user2");
+            }
+            result.add(row);
+        }
+       
+        return result;
     }
 
     public static void openCon() {
