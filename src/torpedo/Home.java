@@ -69,7 +69,7 @@ public class Home extends JPanel {
         JPanel chatPn = new JPanel();
 
         //profilePn.add(new JLabel("profile"));
-        //profilePn.add(frame.getGamePanel());
+        profilePn.add(frame.getGamePanel());
         Map<String, String> profile = Db.getProfile("a");
         profilePn.add(new JLabel(profile.get("date")));
 
